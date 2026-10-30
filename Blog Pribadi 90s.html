@@ -1,0 +1,997 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Homepage Gw - Welcome to My Homepage!</title>
+
+<style>
+:root {
+  --bg:#008080;
+  --tile:#00a0a0;
+  --paper:#ffffcc;
+  --ink:#000;
+  --link:#0000ee;
+  --vlink:#551a8b;
+  --hot:#ff0000;
+  --bar:#000080;
+  --barink:#fff;
+  --edge:#c0c0c0;
+  box-sizing:border-box;
+  color-scheme:light;
+}
+
+* {box-sizing:border-box}
+
+body {
+  margin:0;
+  padding:10px;
+  font-family:"Times New Roman",serif;
+  font-size:17px;
+  color:var(--ink);
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(45deg,var(--tile) 25%,transparent 25%,transparent 75%,var(--tile) 75%),
+    linear-gradient(45deg,var(--tile) 25%,transparent 25%,transparent 75%,var(--tile) 75%);
+  background-size:24px 24px;
+  background-position:0 0,12px 12px;
+}
+
+a {color:var(--link)}
+a:visited {color:var(--vlink)}
+
+#wrap {
+  max-width:850px;
+  margin:0 auto;
+  background:var(--paper);
+  border:4px outset var(--edge);
+  padding:10px;
+}
+
+#banner {
+  min-height:105px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border:3px ridge var(--edge);
+  background:repeating-linear-gradient(45deg,#ffcc00 0 12px,#000 12px 24px);
+  margin-bottom:8px;
+}
+
+.banner-text {
+  background:var(--paper);
+  padding:12px;
+  border:2px dashed #000;
+  font-family:"Courier New",monospace;
+}
+
+.banner-text h1 {
+  margin:0;
+  font-size:27px;
+}
+
+.banner-text p {
+  margin:4px 0 0;
+  font-size:13px;
+}
+
+.marq {
+  background:var(--bar);
+  color:white;
+  font-family:"Courier New",monospace;
+  padding:4px 0;
+  overflow:hidden;
+  white-space:nowrap;
+  border:2px inset var(--edge);
+}
+
+.marq span {
+  display:inline-block;
+  padding-left:100%;
+  animation:geser 18s linear infinite;
+}
+
+@keyframes geser {
+  to {transform:translateX(-100%)}
+}
+
+nav {
+  margin:8px 0;
+  padding:6px;
+  border:2px groove var(--edge);
+  text-align:center;
+  line-height:2.3;
+}
+
+nav a {
+  display:inline-block;
+  padding:1px 9px;
+  margin:1px;
+  background:var(--edge);
+  color:#000!important;
+  text-decoration:none;
+  border:2px outset white;
+  font-family:Arial,sans-serif;
+  font-size:13px;
+  font-weight:bold;
+}
+
+nav a:active,nav a.on {
+  border-style:inset;
+  background:#ffff00;
+}
+
+.cols {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+aside {
+  flex:0 0 190px;
+  font-size:15px;
+}
+
+main {
+  flex:1 1 380px;
+  min-width:0;
+}
+
+.box {
+  border:2px ridge var(--edge);
+  padding:8px;
+  margin-bottom:10px;
+  background:var(--paper);
+}
+
+.box h3 {
+  margin:-8px -8px 6px;
+  padding:3px 6px;
+  background:var(--bar);
+  color:white;
+  font:bold 14px Arial,sans-serif;
+}
+
+h1 {
+  font-family:"Comic Sans MS",cursive;
+  font-size:30px;
+  margin:6px 0;
+  text-align:center;
+}
+
+h2 {
+  font-family:"Comic Sans MS",cursive;
+  color:var(--hot);
+  margin:4px 0 8px;
+  border-bottom:3px double var(--ink);
+}
+
+.rainbow {
+  background:linear-gradient(90deg,red,orange,#c8c800,green,blue,purple);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.blink {
+  animation:kedip 1s steps(2,start) infinite;
+}
+
+@keyframes kedip {
+  to {visibility:hidden}
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .blink,.marq span {animation:none}
+  .marq span {padding-left:0}
+}
+
+.page {display:none}
+.page.on {display:block}
+
+hr {
+  border:0;
+  height:6px;
+  background:repeating-linear-gradient(90deg,red 0 8px,blue 8px 16px,green 16px 24px);
+}
+
+table {
+  border-collapse:collapse;
+  width:100%;
+}
+
+td,th {
+  border:2px inset var(--edge);
+  padding:5px 8px;
+  text-align:left;
+  vertical-align:top;
+}
+
+th {
+  background:var(--edge);
+  color:#000;
+  width:34%;
+}
+
+.foto {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+}
+
+.foto figure {
+  margin:0;
+  border:3px outset var(--edge);
+  padding:4px;
+  background:var(--paper);
+  text-align:center;
+  font-size:14px;
+}
+
+.foto .img {
+  aspect-ratio:4/3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font:bold 13px "Courier New",monospace;
+  color:#000;
+  background:repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/16px 16px;
+}
+
+
+.foto figure img {
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  display:block;
+  border:2px inset #aaa;
+  margin-bottom:6px;
+  background:#ddd;
+}
+
+.foto figure {
+  overflow:hidden;
+  line-height:1.5;
+}
+
+.foto figure b {
+  font-family:"Courier New",monospace;
+  font-size:13px;
+}
+
+
+.post {margin-bottom:12px}
+
+.post small {
+  color:var(--hot);
+  font-family:"Courier New",monospace;
+}
+
+input,textarea,button {
+  font:15px Arial,sans-serif;
+  max-width:100%;
+}
+
+input,textarea {
+  border:2px inset var(--edge);
+  padding:5px;
+  background:white;
+  color:black;
+  width:100%;
+}
+
+button {
+  border:2px outset white;
+  background:var(--edge);
+  color:black;
+  padding:5px 12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:active {border-style:inset}
+
+.counter {
+  font-family:"Courier New",monospace;
+  background:#000;
+  color:#0f0;
+  display:inline-block;
+  padding:3px 8px;
+  letter-spacing:3px;
+  border:2px inset var(--edge);
+}
+
+.badge {
+  display:inline-block;
+  border:2px outset var(--edge);
+  background:#000;
+  color:#0f0;
+  font:bold 11px "Courier New",monospace;
+  padding:2px 5px;
+  margin:2px;
+}
+
+footer {
+  text-align:center;
+  font-size:14px;
+  margin-top:6px;
+}
+
+.entry {
+  border-left:6px solid var(--hot);
+  padding:5px 8px;
+  margin:8px 0;
+  background:rgba(128,128,128,.12);
+}
+
+.small-note {
+  font-size:13px;
+}
+
+@media(max-width:600px) {
+  aside {flex-basis:100%}
+  h1 {font-size:24px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="wrap">
+
+<!-- HEADER -->
+<div id="banner">
+  <div class="banner-text">
+    <h1>WELCOME TO MY HOMEPAGE!</h1>
+    <p>Just another person on the internet...</p>
+    <p>Est. 2021 | Made with LOsVE & curiosity</p>
+  </div>
+</div>
+
+<div class="marq">
+  <span>
+    *** HALO, SELAMAT DATANG DI WEBSITE GW *** 
+    GAK ADA YANG SPESIAL DI SINI, CUMA ISI RANDOM ***
+    ENJOY YOUR VISIT ***
+  </span>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <a href="#beranda">Home</a>
+  <a href="#info">About Me</a>
+  <a href="#blog">My Blog</a>
+  <a href="#project">Projects</a>
+  <a href="#foto">Gallery</a>
+  <a href="#link">Favorite Links</a>
+  <a href="#tamu">Guestbook</a>
+</nav>
+
+<div class="cols">
+
+<!-- SIDEBAR -->
+<aside>
+
+  <div class="box">
+    <h3>Visitor Counter</h3>
+    <div style="text-align:center">
+      <span class="counter" id="cnt">000000</span>
+    </div>
+    <p class="small-note" style="text-align:center">
+      Thanks for visiting!
+    </p>
+  </div>
+
+  <div class="box">
+    <h3>Current Status</h3>
+    <p style="margin:0">
+      Mood: <b>gajelas</b><br>
+      Activity: <i>ngulik internet</i><br>
+      Music: <i>tergantung mood</i><br>
+      Status: <span class="blink" style="color:green;font-weight:bold">● ONLINE</span>
+    </p>
+  </div>
+
+  <div class="box">
+    <h3>About This Site</h3>
+    <p style="margin:0">
+      Website pribadi gw. Isinya mungkin random, mungkin gak penting, tapi ya terserah gw juga.
+    </p>
+  </div>
+
+  <div class="box">
+    <h3>My Interests</h3>
+    <ul style="padding-left:20px;margin:5px 0">
+      <li>Computers</li>
+      <li>Video Games</li>
+      <li>Old Internet</li>
+      <li>History</li>
+      <li>Music</li>
+      <li>Programming</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>Web Badges</h3>
+    <span class="badge">HTML</span>
+    <span class="badge">NO FRAMES</span>
+    <span class="badge">RETRO WEB</span>
+    <span class="badge">BEST VIEWED 800x600</span>
+  </div>
+
+  <div class="box" style="text-align:center">
+    <h3>Random Quote</h3>
+    <i>"I have no idea what I'm doing here."</i>
+  </div>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main>
+
+<!-- HOME -->
+<section class="page" id="beranda">
+
+  <h1 class="rainbow">~*~ Hello Web Surfer! ~*~</h1>
+
+  <p style="text-align:center;font-size:19px">
+    <b>Welcome to my little corner of the internet!</b>
+    <span class="blink">★</span>
+  </p>
+
+  <hr>
+
+  <p>
+    Halo, akhirnya lu mampir juga ke website gw. Gak tau mau mulai dari mana, tapi ya selamat datang aja dulu.
+  </p>
+
+  <p>
+    Ini homepage pribadi gw. Tempat buat naro berbagai macam hal yang gw suka, beberapa project, foto, tulisan random, atau apapun yang nantinya kepikiran buat dimasukin ke sini.
+  </p>
+
+  <p>
+    Sebenernya alasan gw bikin website ini cukup sederhana. Gw selalu ngerasa website jadul itu keren. Desainnya mungkin kelihatan kuno, warnanya kadang aneh, font-nya gak karuan, ada tulisan berjalan, visitor counter, dan berbagai elemen yang sekarang udah jarang dipakai.
+  </p>
+
+  <p>
+    Tapi justru itu daya tariknya. Website zaman dulu punya karakter sendiri dan rasanya lebih personal. Jadi gw kepikiran buat bikin homepage dengan nuansa internet era 90-an sampai awal 2000-an.
+  </p>
+
+  <p>
+    So yeah, here we are. Gak ada tujuan yang terlalu serius, gw cuma pengen punya website sendiri.
+  </p>
+
+  <div class="box">
+    <h3>Latest Updates</h3>
+
+    <div class="entry">
+      <small>[31 Oktober 2026]</small><br>
+      Homepage ini akhirnya selesai dibuat. Tinggal nunggu ide random berikutnya.
+    </div>
+
+    <div class="entry">
+      <small>[30 Oktober 2026]</small><br>
+      Lagi tertarik sama desain website jadul. Ternyata bikin beginian lumayan seru.
+    </div>
+
+    <div class="entry">
+      <small>[29 Oktober 2026]</small><br>
+      Gak ada update penting. Just another ordinary day.
+    </div>
+  </div>
+
+  <p style="text-align:center">
+    <a href="#blog">Check out my blog</a> |
+    <a href="#tamu">Leave a message</a>
+  </p>
+
+</section>
+
+<!-- ABOUT -->
+<section class="page" id="info">
+
+  <h2>About Me</h2>
+
+  <p>
+    Jadi, siapa gw? Pertanyaan yang cukup sulit dijawab juga sebenarnya.
+  </p>
+
+  <p>
+    Gw cuma seseorang yang suka menghabiskan waktu di depan komputer, main game, ngulik sesuatu, dengerin musik, dan tertarik sama banyak hal.
+  </p>
+
+  <p>
+    Kadang punya banyak ide, kadang produktif, kadang malah gak ngapa-ngapain. Mood juga gak bisa ditebak. Hari ini bisa tertarik sama sesuatu, besok belum tentu.
+  </p>
+
+  <p>
+    Gw juga suka menjelajahi internet dan menemukan hal-hal menarik yang mungkin gak banyak orang perhatikan.
+  </p>
+
+  <h2>Personal Information</h2>
+
+  <table>
+    <tr>
+      <th>Nickname</th>
+      <td>Sugarhill Naa</td>
+    </tr>
+    <tr>
+      <th>Location</th>
+      <td>Chicago</td>
+    </tr>
+    <tr>
+      <th>Occupation</th>
+      <td>Student</td>
+    </tr>
+    <tr>
+      <th>Hobbies</th>
+      <td>Gaming, coding, exploring the internet</td>
+    </tr>
+    <tr>
+      <th>Favorite Music</th>
+      <td>Various genres</td>
+    </tr>
+    <tr>
+      <th>Favorite Games</th>
+      <td>Various PC games</td>
+    </tr>
+    <tr>
+      <th>Personality</th>
+      <td>Depends on the day</td>
+    </tr>
+    <tr>
+      <th>Mood</th>
+      <td>Unknown</td>
+    </tr>
+  </table>
+
+  <h2 style="margin-top:15px">Why This Website?</h2>
+
+  <p>
+    Karena gw suka konsep personal homepage. Dulu orang-orang bikin website sendiri, bebas mendesain sesuka hati, menulis apa saja, dan membagikan hal-hal yang mereka sukai.
+  </p>
+
+  <p>
+    Sekarang kebanyakan orang cuma punya akun media sosial. Makanya menurut gw punya website sendiri itu menarik. Rasanya beda ketika punya sudut kecil di internet yang sepenuhnya bisa diatur sendiri.
+  </p>
+
+  <p>
+    Anyway, that's all about me for now.
+  </p>
+
+</section>
+
+<!-- BLOG -->
+<section class="page" id="blog">
+
+  <h2>My Personal Blog</h2>
+
+  <p>
+    Beberapa tulisan random dari gw. Gak semuanya penting, tapi ya namanya juga blog pribadi.
+  </p>
+
+  <hr>
+
+  <div class="post box">
+    <h3>Why I Like The Old Internet</h3>
+    <small>31 Oktober 2026 | Mood: entahlah</small>
+
+    <p>
+      Internet zaman dulu punya suasana yang agak berbeda. Website dibuat dengan desain masing-masing, ada yang warna-warni, ada yang penuh GIF, bahkan ada yang tampilannya benar-benar berantakan.
+    </p>
+
+    <p>
+      Tapi menurut gw itu justru menarik. Setiap website punya identitas sendiri. Gak semuanya harus mengikuti desain minimalis atau terlihat profesional.
+    </p>
+
+    <p>
+      Sometimes old things are just cool.
+    </p>
+  </div>
+
+  <div class="post box">
+    <h3>My Little Homepage</h3>
+    <small>30 Oktober 2026 | Mood: random</small>
+
+    <p>
+      Gw kepikiran buat punya website sendiri. Bukan buat bisnis, bukan buat mencari pengunjung, dan bukan juga buat sesuatu yang serius.
+    </p>
+
+    <p>
+      Cuma pengen punya tempat sendiri di internet. Bisa naro tulisan, project, foto, dan berbagai hal yang gw suka.
+    </p>
+
+    <p>
+      Kayaknya bakal menarik kalau website ini terus berkembang.
+    </p>
+  </div>
+
+  <div class="post box">
+    <h3>Nothing Special Today</h3>
+    <small>29 Oktober 2026 | Mood: gajelas</small>
+
+    <p>
+      Hari ini gak ada sesuatu yang menarik. Kadang memang begitu, bangun, menjalani hari, buka komputer, main game, dan seterusnya.
+    </p>
+
+    <p>
+      Gak semua hari harus punya cerita menarik.
+    </p>
+  </div>
+
+  <div class="post box">
+    <h3>Computers Are Interesting</h3>
+    <small>28 Oktober 2026 | Mood: lumayan</small>
+
+    <p>
+      Gw suka komputer karena banyak hal yang bisa dipelajari. Mulai dari hardware, software, operating system, sampai programming.
+    </p>
+
+    <p>
+      Kadang satu masalah kecil bisa bikin pusing berjam-jam, tapi ketika akhirnya berhasil diperbaiki rasanya lumayan memuaskan.
+    </p>
+  </div>
+
+</section>
+
+<!-- PROJECTS -->
+<section class="page" id="project">
+
+  <h2>My Projects</h2>
+
+  <p>
+    Beberapa project yang pernah gw buat atau masih gw kerjakan. Nanti bakal gw tambahin lagi kalau ada sesuatu yang menarik.
+  </p>
+
+  <table>
+    <tr>
+      <th>Project</th>
+      <th>Description</th>
+      <th>Status</th>
+    </tr>
+
+    <tr>
+      <td><b>Personal Homepage</b></td>
+      <td>Website pribadi dengan desain retro internet.</td>
+      <td>✔ Online</td>
+    </tr>
+
+    <tr>
+      <td><b>Game Store</b></td>
+      <td>Website toko game digital.</td>
+      <td>⚙ Development</td>
+    </tr>
+
+    <tr>
+      <td><b>Web Experiments</b></td>
+      <td>Berbagai eksperimen HTML, CSS, dan JavaScript.</td>
+      <td>⚙ Ongoing</td>
+    </tr>
+
+    <tr>
+      <td><b>Future Projects</b></td>
+      <td>Ide-ide yang belum tentu bakal dikerjakan.</td>
+      <td>Planning</td>
+    </tr>
+
+  </table>
+
+  <h2 style="margin-top:15px">My Skills</h2>
+
+  <ul>
+    <li>HTML & CSS</li>
+    <li>JavaScript</li>
+    <li>Basic Web Development</li>
+    <li>Computer Troubleshooting</li>
+    <li>Learning new things</li>
+  </ul>
+
+  <p>
+    Masih banyak yang harus dipelajari. One step at a time.
+  </p>
+
+</section>
+
+
+<!-- GALLERY -->
+<section class="page" id="foto">
+
+  <h2>My Photo Gallery</h2>
+
+  <p>
+    Beberapa foto random yang gw simpan di sini. Gak ada tema khusus, cuma kumpulan foto yang menurut gw menarik.
+  </p>
+
+  <p style="font-family:'Courier New';font-size:13px">
+    [ PHOTO ALBUM ] - Updated: 31 October 2026
+  </p>
+
+  <hr>
+
+  <div class="foto">
+
+    <figure>
+      <img src="images/foto1.jpg" alt="Foto 1" loading="lazy">
+      <b>Photo No. 01</b>
+      <br>Just a random picture
+    </figure>
+
+    <figure>
+      <img src="images/foto2.jpg" alt="Foto 2" loading="lazy">
+      <b>Photo No. 02</b>
+      <br>Something interesting
+    </figure>
+
+    <figure>
+      <img src="images/foto3.jpg" alt="Foto 3" loading="lazy">
+      <b>Photo No. 03</b>
+      <br>My favorite
+    </figure>
+
+    <figure>
+      <img src="images/foto4.jpg" alt="Foto 4" loading="lazy">
+      <b>Photo No. 04</b>
+      <br>Another random day
+    </figure>
+
+    <figure>
+      <img src="images/foto5.jpg" alt="Foto 5" loading="lazy">
+      <b>Photo No. 05</b>
+      <br>Computer stuff
+    </figure>
+
+    <figure>
+      <img src="images/foto6.jpg" alt="Foto 6" loading="lazy">
+      <b>Photo No. 06</b>
+      <br>Personal archive
+    </figure>
+
+    <figure>
+      <img src="images/foto7.jpg" alt="Foto 7" loading="lazy">
+      <b>Photo No. 07</b>
+      <br>Old memories
+    </figure>
+
+    <figure>
+      <img src="images/foto8.jpg" alt="Foto 8" loading="lazy">
+      <b>Photo No. 08</b>
+      <br>Uncategorized
+    </figure>
+
+  </div>
+
+  <hr>
+
+  <p style="text-align:center;font-size:14px">
+    *** That's all for now. Maybe I'll add more pictures later. ***
+  </p>
+
+</section>
+
+
+<!-- FAVORITE LINKS -->
+<section class="page" id="link">
+
+  <h2>Favorite Links</h2>
+
+  <p>
+    Beberapa website yang sering gw kunjungi atau menurut gw menarik.
+  </p>
+
+  <ul>
+    <li><a href="https://www.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a> - Knowledge and information.</li>
+    <li><a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a> - Videos and entertainment.</li>
+    <li><a href="https://www.archive.org/" target="_blank" rel="noopener">Internet Archive</a> - Digital library and old internet.</li>
+    <li><a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> - Coding and development.</li>
+    <li><a href="https://store.steampowered.com/" target="_blank" rel="noopener">Steam</a> - PC gaming.</li>
+    <li><a href="https://neocities.org/" target="_blank" rel="noopener">Neocities</a> - Personal websites.</li>
+  </ul>
+
+  <hr>
+
+  <h2>Web Surfing</h2>
+
+  <p>
+    Internet itu luas banget. Kadang menemukan website random yang bahkan gak pernah kita cari justru jadi bagian paling menarik dari browsing.
+  </p>
+
+  <p>
+    Kalau punya website sendiri, boleh juga tukeran link. Tinggal tulis di guestbook.
+  </p>
+
+</section>
+
+<!-- GUESTBOOK -->
+<section class="page" id="tamu">
+
+  <h2>Guestbook</h2>
+
+  <p>
+    Oh, lu udah sampai sini. Tinggalkan pesan kalau mau, siapa tahu gw baca nanti.
+  </p>
+
+  <div class="box">
+
+    <h3>Sign My Guestbook!</h3>
+
+    <label>
+      Nama:
+      <br>
+      <input id="gn" maxlength="30" placeholder="Nama lu...">
+    </label>
+
+    <br><br>
+
+    <label>
+      Pesan:
+      <br>
+      <textarea id="gp" rows="4" maxlength="200" placeholder="Tulis sesuatu..."></textarea>
+    </label>
+
+    <br><br>
+
+    <button id="gk" type="button">Submit Message</button>
+
+    <p class="small-note">
+      Pesan disimpan di browser perangkat ini saja.
+    </p>
+
+  </div>
+
+  <h2>Messages</h2>
+
+  <div id="gl"></div>
+
+</section>
+
+</main>
+</div>
+
+<hr>
+
+<footer>
+  <p>
+    © 1999-2026 My Personal Homepage.
+    All rights reserved.
+  </p>
+
+  <p>
+    Made with HTML, CSS, and a little bit of boredom.
+  </p>
+
+  <p>
+    <a href="#beranda">Back to Top</a> |
+    <a href="#tamu">Guestbook</a>
+  </p>
+
+  <span class="badge">BEST VIEWED WITH ANY BROWSER</span>
+  <span class="badge">MADE IN CHICAGO</span>
+</footer>
+
+</div>
+
+<script>
+(function(){
+
+  var pages = [
+    "beranda",
+    "info",
+    "blog",
+    "project",
+    "foto",
+    "link",
+    "tamu"
+  ];
+
+  function show(){
+
+    var h = (location.hash || "#beranda").slice(1);
+
+    if(pages.indexOf(h) < 0) h = "beranda";
+
+    pages.forEach(function(p){
+      document.getElementById(p).classList.toggle("on",p===h);
+    });
+
+    var links = document.querySelectorAll("#nav a");
+
+    for(var i=0;i<links.length;i++){
+      links[i].classList.toggle(
+        "on",
+        links[i].getAttribute("href")==="#"+h
+      );
+    }
+
+  }
+
+  window.addEventListener("hashchange",show);
+  show();
+
+  // VISITOR COUNTER
+  var n = 1337;
+
+  try{
+    var v = parseInt(localStorage.getItem("v90") || "0",10)+1;
+    localStorage.setItem("v90",String(v));
+    n += v;
+  }catch(e){
+    n += 1;
+  }
+
+  document.getElementById("cnt").textContent =
+    ("000000"+n).slice(-6);
+
+  // GUESTBOOK
+  var gl = document.getElementById("gl");
+  var list = [];
+
+  try{
+    list = JSON.parse(localStorage.getItem("gb90") || "[]");
+    if(!Array.isArray(list)) list = [];
+  }catch(e){
+    list = [];
+  }
+
+  function esc(s){
+    var d = document.createElement("div");
+    d.textContent = String(s);
+    return d.innerHTML;
+  }
+
+  function render(){
+
+    if(!list.length){
+      gl.innerHTML = "<p>Belum ada pesan. Jadi yang pertama!</p>";
+      return;
+    }
+
+    gl.innerHTML = list.map(function(m){
+
+      return '<div class="entry">' +
+        '<small>['+esc(m.t)+']</small> ' +
+        '<b>'+esc(m.n)+'</b> bilang:<br>' +
+        esc(m.p) +
+        '</div>';
+
+    }).join("");
+
+  }
+
+  render();
+
+  document.getElementById("gk").addEventListener("click",function(){
+
+    var nm = document.getElementById("gn").value.trim();
+    var ps = document.getElementById("gp").value.trim();
+
+    if(!nm || !ps){
+      alert("Nama sama pesannya diisi dulu bro.");
+      return;
+    }
+
+    list.unshift({
+      n:nm,
+      p:ps,
+      t:new Date().toLocaleDateString("id-ID")
+    });
+
+    list = list.slice(0,30);
+
+    try{
+      localStorage.setItem("gb90",JSON.stringify(list));
+    }catch(e){}
+
+    document.getElementById("gn").value = "";
+    document.getElementById("gp").value = "";
+
+    render();
+
+  });
+
+})();
+</script>
+
+</body>
+</html>
