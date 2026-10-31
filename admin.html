@@ -52,8 +52,8 @@ label{font-weight:bold}.muted{font-size:13px}.hidden{display:none}.item{border-l
 </div></div>
 <script>
 (function(){
-  const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL";
-  const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY";
+  const SUPABASE_URL = "https://hhshmdzvlbhyghscyogk.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_m7b2A15Mdoz-pEgmXeuNcw_NSBXllZS";
   const statusEl=document.getElementById("status");
   const configured=window.supabase && SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_KEY.includes("PASTE_");
   if(!configured){statusEl.textContent="Belum dikonfigurasi. Isi SUPABASE_URL dan SUPABASE_KEY di bagian bawah file admin.html.";return;}
