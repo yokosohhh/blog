@@ -872,6 +872,7 @@ footer {
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
 
@@ -923,73 +924,135 @@ footer {
   document.getElementById("cnt").textContent =
     ("000000"+n).slice(-6);
 
-  // GUESTBOOK
+  // GUESTBOOK - shared online storage with Supabase
+  // Replace these two values with your Supabase project URL and anon/public key.
+  var SUPABASE_URL = "https://hhshmdzvlbhyghscyogk.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_m7b2A15Mdoz-pEgmXeuNcw_NSBXllZS";
+
   var gl = document.getElementById("gl");
-  var list = [];
+  var guestbookButton = document.getElementById("gk");
+  var guestbookNote = document.querySelector("#tamu .box .small-note");
+  var supabaseReady =
+    window.supabase &&
+    SUPABASE_URL.indexOf("YOUR-PROJECT-ID") === -1 &&
+    SUPABASE_ANON_KEY !== "YOUR-SUPABASE-ANON-KEY";
 
-  try{
-    list = JSON.parse(localStorage.getItem("gb90") || "[]");
-    if(!Array.isArray(list)) list = [];
-  }catch(e){
-    list = [];
+  var db = supabaseReady
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+
+  function setGuestbookNote(message) {
+    if (guestbookNote) guestbookNote.textContent = message;
   }
 
-  function esc(s){
-    var d = document.createElement("div");
-    d.textContent = String(s);
-    return d.innerHTML;
-  }
+  function renderMessages(messages) {
+    gl.textContent = "";
 
-  function render(){
-
-    if(!list.length){
-      gl.innerHTML = "<p>Belum ada pesan. Jadi yang pertama!</p>";
+    if (!messages || !messages.length) {
+      var empty = document.createElement("p");
+      empty.textContent = "Belum ada pesan. Jadi yang pertama!";
+      gl.appendChild(empty);
       return;
     }
 
-    gl.innerHTML = list.map(function(m){
+    messages.forEach(function(message) {
+      var entry = document.createElement("div");
+      entry.className = "entry";
 
-      return '<div class="entry">' +
-        '<small>['+esc(m.t)+']</small> ' +
-        '<b>'+esc(m.n)+'</b> bilang:<br>' +
-        esc(m.p) +
-        '</div>';
+      var date = document.createElement("small");
+      var parsedDate = new Date(message.created_at);
+      date.textContent = "[" + (
+        isNaN(parsedDate.getTime())
+          ? "Tanggal tidak tersedia"
+          : parsedDate.toLocaleString("id-ID")
+      ) + "] ";
 
-    }).join("");
+      var name = document.createElement("b");
+      name.textContent = message.name;
 
+      var intro = document.createTextNode(" bilang:");
+
+      var body = document.createElement("div");
+      body.style.whiteSpace = "pre-wrap";
+      body.textContent = message.message;
+
+      entry.appendChild(date);
+      entry.appendChild(name);
+      entry.appendChild(intro);
+      entry.appendChild(document.createElement("br"));
+      entry.appendChild(body);
+      gl.appendChild(entry);
+    });
   }
 
-  render();
+  async function loadMessages() {
+    if (!db) {
+      renderMessages([]);
+      setGuestbookNote("Guestbook belum tersambung. Isi URL dan anon key Supabase di kode agar pesan bisa disimpan online.");
+      return;
+    }
 
-  document.getElementById("gk").addEventListener("click",function(){
+    gl.textContent = "Loading messages...";
 
-    var nm = document.getElementById("gn").value.trim();
-    var ps = document.getElementById("gp").value.trim();
+    var result = await db
+      .from("guestbook")
+      .select("id, name, message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
 
-    if(!nm || !ps){
+    if (result.error) {
+      gl.textContent = "Gagal memuat pesan. Coba refresh halaman.";
+      setGuestbookNote("Koneksi database gagal: " + result.error.message);
+      return;
+    }
+
+    renderMessages(result.data);
+    setGuestbookNote("Pesan tersimpan online dan bisa dibaca pengunjung lain.");
+  }
+
+  guestbookButton.addEventListener("click", async function() {
+    var nameInput = document.getElementById("gn");
+    var messageInput = document.getElementById("gp");
+    var name = nameInput.value.trim();
+    var message = messageInput.value.trim();
+
+    if (!name || !message) {
       alert("Nama sama pesannya diisi dulu bro.");
       return;
     }
 
-    list.unshift({
-      n:nm,
-      p:ps,
-      t:new Date().toLocaleDateString("id-ID")
-    });
+    if (name.length > 30 || message.length > 200) {
+      alert("Nama maksimal 30 karakter dan pesan maksimal 200 karakter.");
+      return;
+    }
 
-    list = list.slice(0,30);
+    if (!db) {
+      alert("Guestbook belum tersambung ke Supabase. Atur URL dan anon key dulu.");
+      return;
+    }
 
-    try{
-      localStorage.setItem("gb90",JSON.stringify(list));
-    }catch(e){}
+    guestbookButton.disabled = true;
+    guestbookButton.textContent = "Sending...";
 
-    document.getElementById("gn").value = "";
-    document.getElementById("gp").value = "";
+    var result = await db.from("guestbook").insert([{
+      name: name,
+      message: message
+    }]);
 
-    render();
+    guestbookButton.disabled = false;
+    guestbookButton.textContent = "Submit Message";
 
+    if (result.error) {
+      alert("Pesan gagal dikirim: " + result.error.message);
+      return;
+    }
+
+    nameInput.value = "";
+    messageInput.value = "";
+    await loadMessages();
   });
 
+  loadMessages();
 })();
 </script>
 
