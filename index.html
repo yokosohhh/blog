@@ -574,65 +574,7 @@ footer {
 
   <hr>
 
-  <div class="post box">
-    <h3>Why I Like The Old Internet</h3>
-    <small>31 Oktober 2026 | Mood: entahlah</small>
-
-    <p>
-      Internet zaman dulu punya suasana yang agak berbeda. Website dibuat dengan desain masing-masing, ada yang warna-warni, ada yang penuh GIF, bahkan ada yang tampilannya benar-benar berantakan.
-    </p>
-
-    <p>
-      Tapi menurut gw itu justru menarik. Setiap website punya identitas sendiri. Gak semuanya harus mengikuti desain minimalis atau terlihat profesional.
-    </p>
-
-    <p>
-      Sometimes old things are just cool.
-    </p>
-  </div>
-
-  <div class="post box">
-    <h3>My Little Homepage</h3>
-    <small>30 Oktober 2026 | Mood: random</small>
-
-    <p>
-      Gw kepikiran buat punya website sendiri. Bukan buat bisnis, bukan buat mencari pengunjung, dan bukan juga buat sesuatu yang serius.
-    </p>
-
-    <p>
-      Cuma pengen punya tempat sendiri di internet. Bisa naro tulisan, project, foto, dan berbagai hal yang gw suka.
-    </p>
-
-    <p>
-      Kayaknya bakal menarik kalau website ini terus berkembang.
-    </p>
-  </div>
-
-  <div class="post box">
-    <h3>Nothing Special Today</h3>
-    <small>29 Oktober 2026 | Mood: gajelas</small>
-
-    <p>
-      Hari ini gak ada sesuatu yang menarik. Kadang memang begitu, bangun, menjalani hari, buka komputer, main game, dan seterusnya.
-    </p>
-
-    <p>
-      Gak semua hari harus punya cerita menarik.
-    </p>
-  </div>
-
-  <div class="post box">
-    <h3>Computers Are Interesting</h3>
-    <small>28 Oktober 2026 | Mood: lumayan</small>
-
-    <p>
-      Gw suka komputer karena banyak hal yang bisa dipelajari. Mulai dari hardware, software, operating system, sampai programming.
-    </p>
-
-    <p>
-      Kadang satu masalah kecil bisa bikin pusing berjam-jam, tapi ketika akhirnya berhasil diperbaiki rasanya lumayan memuaskan.
-    </p>
-  </div>
+  <div id="blogPosts"><p>Loading blog posts...</p></div>
 
 </section>
 
@@ -926,8 +868,8 @@ footer {
 
   // GUESTBOOK - shared online storage with Supabase
   // Replace these two values with your Supabase project URL and anon/public key.
-  var SUPABASE_URL = "https://hhshmdzvlbhyghscyogk.supabase.co";
-  var SUPABASE_ANON_KEY = "sb_publishable_m7b2A15Mdoz-pEgmXeuNcw_NSBXllZS";
+  var SUPABASE_URL = "https://YOUR-PROJECT-ID.supabase.co";
+  var SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY";
 
   var gl = document.getElementById("gl");
   var guestbookButton = document.getElementById("gk");
@@ -940,6 +882,47 @@ footer {
   var db = supabaseReady
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     : null;
+
+  // PUBLIC BLOG: load articles created from admin.html
+  async function loadBlogPosts() {
+    var container = document.getElementById("blogPosts");
+    if (!container) return;
+    if (!db) {
+      container.textContent = "Blog online belum tersambung. Periksa konfigurasi Supabase.";
+      return;
+    }
+    var result = await db
+      .from("blog_posts")
+      .select("id, title, body, created_at")
+      .order("created_at", { ascending: false });
+    if (result.error) {
+      container.textContent = "Gagal memuat blog: " + result.error.message;
+      return;
+    }
+    container.textContent = "";
+    if (!result.data || !result.data.length) {
+      container.textContent = "Belum ada artikel baru.";
+      return;
+    }
+    result.data.forEach(function(post) {
+      var article = document.createElement("div");
+      article.className = "post box";
+      var heading = document.createElement("h3");
+      heading.textContent = post.title;
+      var date = document.createElement("small");
+      var parsed = new Date(post.created_at);
+      date.textContent = isNaN(parsed.getTime()) ? "Tanggal tidak tersedia" : parsed.toLocaleString("id-ID");
+      var body = document.createElement("p");
+      body.style.whiteSpace = "pre-wrap";
+      body.textContent = post.body;
+      article.appendChild(heading);
+      article.appendChild(date);
+      article.appendChild(body);
+      container.appendChild(article);
+    });
+  }
+
+  loadBlogPosts();
 
   function setGuestbookNote(message) {
     if (guestbookNote) guestbookNote.textContent = message;
