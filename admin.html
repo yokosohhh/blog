@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sugarhill Naa — Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#008080;--tile:#00a0a0;--paper:#ffffcc;--ink:#000;--bar:#000080;--edge:#c0c0c0}
+*{box-sizing:border-box}body{margin:0;padding:12px;font:16px "Times New Roman",serif;color:var(--ink);background-color:var(--bg);background-image:linear-gradient(45deg,var(--tile) 25%,transparent 25%,transparent 75%,var(--tile) 75%),linear-gradient(45deg,var(--tile) 25%,transparent 25%,transparent 75%,var(--tile) 75%);background-size:24px 24px;background-position:0 0,12px 12px}
+#app{max-width:900px;margin:auto;background:var(--paper);border:4px outset var(--edge);padding:12px}
+header{text-align:center;background:repeating-linear-gradient(45deg,#fc0 0 12px,#000 12px 24px);padding:18px;border:3px ridge var(--edge)}
+header div{display:inline-block;background:var(--paper);border:2px dashed #000;padding:10px}h1{margin:0;font: bold 25px "Courier New",monospace}
+nav{margin:10px 0;padding:8px;background:#ddd;border:2px groove var(--edge);display:flex;gap:8px;flex-wrap:wrap}
+button{font-weight:bold;padding:7px 12px;border:2px outset white;background:#c0c0c0;cursor:pointer}button:active{border-style:inset}button:disabled{opacity:.5;cursor:wait}
+.panel{border:2px ridge var(--edge);padding:10px;margin:10px 0}.panel h2{margin:-10px -10px 10px;padding:5px 8px;background:var(--bar);color:white;font:bold 15px Arial}
+input,textarea{width:100%;padding:8px;border:2px inset var(--edge);font:15px Arial;margin:4px 0 10px}textarea{min-height:110px}
+label{font-weight:bold}.muted{font-size:13px}.hidden{display:none}.item{border-left:5px solid red;background:#eee;padding:9px;margin:8px 0;overflow-wrap:anywhere}.item img{max-width:130px;max-height:100px;display:block;margin:6px 0} .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:1}.danger{background:#ffd7d7}#status{padding:8px;background:#000;color:#0f0;font:13px monospace;white-space:pre-wrap}
+</style>
+</head>
+<body><div id="app">
+<header><div><h1>SUGARHILL NAA — ADMIN</h1><div class="muted">Personal Homepage Management System</div></div></header>
+<div id="status">Setup required: isi Supabase URL dan publishable key di file ini.</div>
+<section id="login" class="panel">
+<h2>Administrator Login</h2>
+<label>Email</label><input id="email" type="email" autocomplete="username" placeholder="Admin email">
+<label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password">
+<button id="loginBtn">Login</button>
+<p class="muted">Akun admin dibuat melalui Supabase Authentication. Pengunjung website tidak perlu login.</p>
+</section>
+<div id="dashboard" class="hidden">
+<nav><button data-tab="posts">Blog Manager</button><button data-tab="photos">Photo Manager</button><button data-tab="guestbook">Guestbook</button><button id="logout">Logout</button><a href="./index.html">View website</a></nav>
+<section id="posts" class="panel tab">
+<h2>Blog Manager</h2>
+<input id="postId" type="hidden">
+<label>Judul artikel</label><input id="postTitle" maxlength="100" placeholder="Judul blog...">
+<label>Isi artikel</label><textarea id="postBody" maxlength="10000" placeholder="Tulis artikel di sini..."></textarea>
+<div class="row"><button id="savePost">Publish / Save</button><button id="clearPost" type="button">Clear form</button></div>
+<div id="postList"></div>
+</section>
+<section id="photos" class="panel tab hidden">
+<h2>Photo Manager</h2>
+<label>Caption foto</label><input id="photoCaption" maxlength="100" placeholder="Caption...">
+<label>Pilih foto</label><input id="photoFile" type="file" accept="image/*">
+<button id="uploadPhoto">Upload Photo</button>
+<p class="muted">Foto akan disimpan di Supabase Storage bucket bernama <b>gallery</b>.</p>
+<div id="photoList"></div>
+</section>
+<section id="guestbook" class="panel tab hidden">
+<h2>Guestbook Moderation</h2><p class="muted">Hapus pesan spam atau pesan yang tidak diinginkan.</p><div id="guestList"></div>
+</section>
+</div></div>
+<script>
+(function(){
+  const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL";
+  const SUPABASE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY";
+  const statusEl=document.getElementById("status");
+  const configured=window.supabase && SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_KEY.includes("PASTE_");
+  if(!configured){statusEl.textContent="Belum dikonfigurasi. Isi SUPABASE_URL dan SUPABASE_KEY di bagian bawah file admin.html.";return;}
+  const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  const $=id=>document.getElementById(id);
+  const status=m=>statusEl.textContent=m;
+  const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  async function checkSession(){
+    const {data:{session}}=await db.auth.getSession();
+    $("login").classList.toggle("hidden",!!session);
+    $("dashboard").classList.toggle("hidden",!session);
+    if(session){status("Logged in as "+session.user.email);loadPosts();loadPhotos();loadGuestbook();}
+  }
+  $("loginBtn").onclick=async()=>{const {error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)status("Login gagal: "+error.message);else checkSession();};
+  $("logout").onclick=async()=>{await db.auth.signOut();checkSession();};
+  document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));$(b.dataset.tab).classList.remove("hidden");});
+  $("clearPost").onclick=()=>{$("postId").value="";$("postTitle").value="";$("postBody").value="";};
+  async function loadPosts(){const {data,error}=await db.from("blog_posts").select("*").order("created_at",{ascending:false});if(error){$("postList").textContent=error.message;return;}$("postList").innerHTML=data.map(p=>`<div class="item"><b>${esc(p.title)}</b><p>${esc(p.body.slice(0,180))}${p.body.length>180?"…":""}</p><button data-edit="${p.id}">Edit</button> <button class="danger" data-del="${p.id}">Delete</button></div>`).join("")||"Belum ada artikel.";data.forEach(p=>{const e=document.querySelector(`[data-edit="${p.id}"]`);if(e)e.onclick=()=>{$("postId").value=p.id;$("postTitle").value=p.title;$("postBody").value=p.body;window.scrollTo(0,0);};const d=document.querySelector(`[data-del="${p.id}"]`);if(d)d.onclick=async()=>{if(confirm("Hapus artikel ini?")){const r=await db.from("blog_posts").delete().eq("id",p.id);if(r.error)status(r.error.message);else loadPosts();}};});}
+  $("savePost").onclick=async()=>{const id=$("postId").value,title=$("postTitle").value.trim(),body=$("postBody").value.trim();if(!title||!body){status("Judul dan isi wajib diisi.");return;}const q=id?db.from("blog_posts").update({title,body}).eq("id",id):db.from("blog_posts").insert({title,body});const {error}=await q;if(error)status("Gagal menyimpan: "+error.message);else{status("Artikel berhasil disimpan.");$("clearPost").click();loadPosts();}};
+  async function loadPhotos(){const {data,error}=await db.from("gallery_photos").select("*").order("created_at",{ascending:false});if(error){$("photoList").textContent=error.message;return;}$("photoList").innerHTML=data.map(p=>`<div class="item"><b>${esc(p.caption||"Untitled")}</b><img src="${esc(p.image_url)}" alt=""><button class="danger" data-phdel="${p.id}">Delete</button></div>`).join("")||"Belum ada foto.";data.forEach(p=>{const b=document.querySelector(`[data-phdel="${p.id}"]`);if(b)b.onclick=async()=>{if(confirm("Hapus foto ini?")){const r=await db.from("gallery_photos").delete().eq("id",p.id);if(r.error)status(r.error.message);else{await db.storage.from("gallery").remove([p.storage_path]);loadPhotos();}}};});}
+  $("uploadPhoto").onclick=async()=>{const f=$("photoFile").files[0];if(!f){status("Pilih foto dulu.");return;}if(!f.type.startsWith("image/")||f.size>5*1024*1024){status("Pilih file gambar maksimal 5 MB.");return;}const path=Date.now()+"-"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");const up=await db.storage.from("gallery").upload(path,f,{upsert:false});if(up.error){status("Upload gagal: "+up.error.message);return;}const {data}=db.storage.from("gallery").getPublicUrl(path);const ins=await db.from("gallery_photos").insert({caption:$("photoCaption").value.trim(),image_url:data.publicUrl,storage_path:path});if(ins.error){status("Foto terupload tetapi metadata gagal: "+ins.error.message);return;}status("Foto berhasil diupload.");$("photoCaption").value="";$("photoFile").value="";loadPhotos();};
+  async function loadGuestbook(){const {data,error}=await db.from("guestbook").select("*").order("created_at",{ascending:false}).limit(100);if(error){$("guestList").textContent=error.message;return;}$("guestList").innerHTML=data.map(m=>`<div class="item"><b>${esc(m.name)}</b> — ${esc(m.created_at)}<p>${esc(m.message)}</p><button class="danger" data-gdel="${m.id}">Delete</button></div>`).join("")||"Belum ada pesan.";data.forEach(m=>{const b=document.querySelector(`[data-gdel="${m.id}"]`);if(b)b.onclick=async()=>{if(confirm("Hapus pesan ini?")){const r=await db.from("guestbook").delete().eq("id",m.id);if(r.error)status(r.error.message);else loadGuestbook();}};});}
+  db.auth.onAuthStateChange(()=>checkSession());checkSession();
+})();
+</script></body></html>
