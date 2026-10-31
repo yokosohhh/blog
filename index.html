@@ -704,6 +704,10 @@ footer {
 
   </div>
 
+  <h2 style="margin-top:15px">Recently Uploaded</h2>
+  <p class="small-note">Foto baru dari admin panel akan muncul di sini.</p>
+  <div class="foto" id="onlineGallery"><p>Loading online gallery...</p></div>
+
   <hr>
 
   <p style="text-align:center;font-size:14px">
@@ -923,6 +927,41 @@ footer {
   }
 
   loadBlogPosts();
+
+  // PUBLIC GALLERY: display photos uploaded from admin.html
+  async function loadOnlineGallery() {
+    var gallery = document.getElementById("onlineGallery");
+    if (!gallery || !db) {
+      if (gallery) gallery.textContent = "Gallery online belum tersambung.";
+      return;
+    }
+    var result = await db
+      .from("gallery_photos")
+      .select("id, caption, image_url, created_at")
+      .order("created_at", { ascending: false });
+    if (result.error) {
+      gallery.textContent = "Gagal memuat foto: " + result.error.message;
+      return;
+    }
+    gallery.textContent = "";
+    if (!result.data || !result.data.length) {
+      gallery.textContent = "Belum ada foto yang diupload dari Admin Panel.";
+      return;
+    }
+    result.data.forEach(function(photo) {
+      var figure = document.createElement("figure");
+      var img = document.createElement("img");
+      img.src = photo.image_url;
+      img.alt = photo.caption || "Gallery photo";
+      img.loading = "lazy";
+      var caption = document.createElement("b");
+      caption.textContent = photo.caption || "Untitled photo";
+      figure.appendChild(img);
+      figure.appendChild(caption);
+      gallery.appendChild(figure);
+    });
+  }
+  loadOnlineGallery();
 
   function setGuestbookNote(message) {
     if (guestbookNote) guestbookNote.textContent = message;
